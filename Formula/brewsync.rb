@@ -5,21 +5,21 @@
 class Brewsync < Formula
   desc "Declarative, Git-backed Homebrew management for multi-machine setups."
   homepage "https://github.com/jtbrough/brewsync"
-  version "0.9.0"
+  version "0.9.1"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/jtbrough/brewsync/releases/download/v0.9.0/brewsync_Darwin_x86_64.tar.gz"
-      sha256 "bc2cec0b1cbeef407a770625afa540d5b51b7f937b8aa0286f44fd98686938c3"
+      url "https://github.com/jtbrough/brewsync/releases/download/v0.9.1/brewsync_Darwin_x86_64.tar.gz"
+      sha256 "57fe4433138c7e9cb6dd894ca82ebfa384e5aa1c247cb10d41df6b6e9ac4a002"
 
       def install
         bin.install "brewsync"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/jtbrough/brewsync/releases/download/v0.9.0/brewsync_Darwin_arm64.tar.gz"
-      sha256 "3ecf39a53f2ce78cf0dcbebc6ebcefa26366f4a379ba2431564dc9a133999419"
+      url "https://github.com/jtbrough/brewsync/releases/download/v0.9.1/brewsync_Darwin_arm64.tar.gz"
+      sha256 "0f4b17b5b4b13a2ee21ca1d8dacd0d35edb9834e53d84658aa2aa3c06c96e557"
 
       def install
         bin.install "brewsync"
@@ -29,15 +29,15 @@ class Brewsync < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/jtbrough/brewsync/releases/download/v0.9.0/brewsync_Linux_x86_64.tar.gz"
-      sha256 "58469e0423258009bad0bf2e9362df2eccde88a53e9ded3b998055b93575fb1d"
+      url "https://github.com/jtbrough/brewsync/releases/download/v0.9.1/brewsync_Linux_x86_64.tar.gz"
+      sha256 "ac940bd1d6fe7df3954ff957d4308654d5185d91978ef9bcf1886c6c4f801826"
       def install
         bin.install "brewsync"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/jtbrough/brewsync/releases/download/v0.9.0/brewsync_Linux_arm64.tar.gz"
-      sha256 "9efd35b74234d64a42d76f1cb0492589513ac15c8d9dcf3cd8a9161c4affff72"
+      url "https://github.com/jtbrough/brewsync/releases/download/v0.9.1/brewsync_Linux_arm64.tar.gz"
+      sha256 "163a6c29f0ff303b82de50adcba5df5b90b97bf6ee8e5156e178920ec3810186"
       def install
         bin.install "brewsync"
       end
