@@ -3,7 +3,7 @@ cask "brewsync" do
   name "brewsync"
   desc "Declarative, Git-backed Homebrew management for multi-machine setups."
   homepage "https://github.com/jtbrough/brewsync"
-  version "0.9.3"
+  version "0.9.4"
 
   livecheck do
     skip "Auto-generated on release."
@@ -14,22 +14,22 @@ cask "brewsync" do
   on_macos do
     on_intel do
       url "https://github.com/jtbrough/brewsync/releases/download/v#{version}/brewsync_Darwin_x86_64.tar.gz"
-      sha256 "dbc1c9deeacc017e8e8cdf01126e407b9bd527b6a37e0db00aa71f6903656151"
+      sha256 "2c9d8f4ae3750f4b30fbd6186c2f64a56abf4f39e4dc68a568cefa283845557e"
     end
     on_arm do
       url "https://github.com/jtbrough/brewsync/releases/download/v#{version}/brewsync_Darwin_arm64.tar.gz"
-      sha256 "fcccc21e075bbe8dbef2decd90eb7c3926ba67b4b59d8ff91dd4760f3babc30c"
+      sha256 "9c8f4c221d2cf2c31fec82bf78bd06f53936187c3aaf28d90c7637133ce31859"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/jtbrough/brewsync/releases/download/v#{version}/brewsync_Linux_x86_64.tar.gz"
-      sha256 "c19115f81e1eb7918947faae9c8716980fd2c88a6d768e5dfc56f10ad030bd72"
+      sha256 "6a8cf3810495a39403fa47cff42d073717f17ef6f6e61e5cadb95a92e8ab89f5"
     end
     on_arm do
       url "https://github.com/jtbrough/brewsync/releases/download/v#{version}/brewsync_Linux_arm64.tar.gz"
-      sha256 "100c0f0f67fa8c583b2122a0cb39c4749ab438ef213f5f8bee7e6a559846973f"
+      sha256 "6660d8a12b8c5a092d9db5cb87d0a0ea02f5b6c601277c52afc48abe91d64666"
     end
   end
 
