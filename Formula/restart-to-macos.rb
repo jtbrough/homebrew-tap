@@ -4,8 +4,8 @@
 class RestartToMacos < Formula
   desc "Simple CLI and desktop launcher for one-time restart into macOS on Asahi Linux"
   homepage "https://github.com/jtbrough/restart-to-macos"
-  url "https://github.com/jtbrough/restart-to-macos/releases/download/v0.1.4/restart-to-macos-0.1.4.tar.gz"
-  sha256 "ad5af7a8c198d425be1f7518edc25ed29f67651193e27d21f7700ccdbb66937c"
+  url "https://github.com/jtbrough/restart-to-macos/releases/download/v0.1.5/restart-to-macos-0.1.5.tar.gz"
+  sha256 "e08fe1c5b0bf8dc37dfc42d951739df20eeb1c8c6fc72a7bbf002584c104114f"
   license "MIT"
 
   depends_on :linux
