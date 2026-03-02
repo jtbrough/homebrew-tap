@@ -1,8 +1,8 @@
 class RestartToLinux < Formula
   desc "Restart macOS into Asahi Linux for one boot"
   homepage "https://github.com/jtbrough/restart-to-linux"
-  url "https://github.com/jtbrough/restart-to-linux/releases/download/v0.1.3/restart-to-linux-0.1.3.tar.gz"
-  sha256 "774e3be2128a253f9071813da747c55d9c0ea9ea949c66ee607fbc1bd71be0a4"
+  url "https://github.com/jtbrough/restart-to-linux/releases/download/v0.1.4/restart-to-linux-0.1.4.tar.gz"
+  sha256 "b22025317fd20e8cb37d0b37500afc331541aadf62a98591abf8fffbf75161ab"
   license "MIT"
 
   depends_on :macos
@@ -13,6 +13,7 @@ class RestartToLinux < Formula
     (share/"restart-to-linux").install "VERSION"
     (share/"restart-to-linux").install "src/applescript/restart-to-linux.applescript" => "restart-to-linux.applescript"
     (share/"restart-to-linux").install "src/applescript/restart-to-linux-launcher.applescript" => "restart-to-linux-launcher.applescript"
+    (share/"restart-to-linux").install "src/macos/restart-to-linux-launcher.sh" => "restart-to-linux-launcher.sh"
     (share/"restart-to-linux").install "packaging/macos/AsahiLinux.icns" if File.exist?("packaging/macos/AsahiLinux.icns")
   end
 
