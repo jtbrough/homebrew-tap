@@ -1,5 +1,5 @@
 cask "konsole-unstable" do
-  version "4698"
+  version "4968"
   sha256 :no_check
 
   on_intel do
