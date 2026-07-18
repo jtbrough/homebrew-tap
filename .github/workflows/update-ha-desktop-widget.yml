@@ -1,0 +1,55 @@
+name: Update HA Desktop Widget
+
+on:
+  schedule:
+    - cron: "30 6 * * *" # daily at 06:30 UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch latest release
+        id: release
+        run: |
+          DATA=$(curl -fsSL "https://api.github.com/repos/Robertg761/HA-Desktop-Widget/releases/latest" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}")
+          VERSION=$(echo "$DATA" | jq -r '.tag_name | ltrimstr("v")')
+          MAC_SHA=$(echo "$DATA" | jq -r '.assets[] | select(.name | endswith("-universal.dmg")) | .digest | ltrimstr("sha256:")')
+          LNX_SHA=$(echo "$DATA" | jq -r '.assets[] | select(.name | endswith("-linux-x86_64.AppImage")) | .digest | ltrimstr("sha256:")')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "mac_sha=$MAC_SHA" >> "$GITHUB_OUTPUT"
+          echo "lnx_sha=$LNX_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Check current version
+        id: current
+        run: |
+          V=$(grep -oP '(?<=version ")[^"]+' Casks/ha-desktop-widget.rb | head -1)
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+
+      - name: Update cask (macOS)
+        if: steps.release.outputs.version != steps.current.outputs.version
+        run: |
+          V="${{ steps.release.outputs.version }}"
+          SHA="${{ steps.release.outputs.mac_sha }}"
+          sed -i "s/version \".*\"/version \"$V\"/" Casks/ha-desktop-widget.rb
+          sed -i "s/sha256 \".*\"/sha256 \"$SHA\"/" Casks/ha-desktop-widget.rb
+
+      - name: Update formula (Linux)
+        if: steps.release.outputs.version != steps.current.outputs.version
+        run: |
+          V="${{ steps.release.outputs.version }}"
+          SHA="${{ steps.release.outputs.lnx_sha }}"
+          sed -i "s/version \".*\"/version \"$V\"/" Formula/ha-desktop-widget.rb
+          sed -i "s/sha256 \".*\"/sha256 \"$SHA\"/" Formula/ha-desktop-widget.rb
+
+      - name: Commit and push
+        if: steps.release.outputs.version != steps.current.outputs.version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/ha-desktop-widget.rb Formula/ha-desktop-widget.rb
+          git commit -m "chore: bump ha-desktop-widget to ${{ steps.release.outputs.version }}"
+          git push

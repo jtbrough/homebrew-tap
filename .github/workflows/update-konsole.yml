@@ -1,0 +1,41 @@
+name: Update Konsole Unstable
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # daily at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch latest build number
+        id: fetch
+        run: |
+          LATEST=$(curl -fsSL "https://cdn.kde.org/ci-builds/utilities/konsole/master/macos-arm64/" \
+            | grep -oP 'konsole-master-\K\d+(?=-macos-clang-arm64\.dmg)' \
+            | sort -n | tail -1)
+          echo "build=$LATEST" >> "$GITHUB_OUTPUT"
+
+      - name: Check current version
+        id: current
+        run: |
+          CURRENT=$(grep -oP '(?<=version ")[^"]+' Casks/konsole-unstable.rb)
+          echo "version=$CURRENT" >> "$GITHUB_OUTPUT"
+
+      - name: Update cask if changed
+        if: steps.fetch.outputs.build != steps.current.outputs.version
+        run: |
+          NEW="${{ steps.fetch.outputs.build }}"
+          sed -i "s/version \".*\"/version \"$NEW\"/" Casks/konsole-unstable.rb
+
+      - name: Commit and push
+        if: steps.fetch.outputs.build != steps.current.outputs.version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/konsole-unstable.rb
+          git commit -m "chore: bump konsole-unstable to ${{ steps.fetch.outputs.build }}"
+          git push
