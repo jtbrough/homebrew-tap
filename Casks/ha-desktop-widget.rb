@@ -1,6 +1,6 @@
 cask "ha-desktop-widget" do
-  version "3.9.0"
-  sha256 "32607f8570151d607c2024e665d668b068444f51ffc5da775e51be67f25af942"
+  version "3.9.1"
+  sha256 "f17154b0551092f13dba705040c9072ab868d6e78ad782aecda20babd65b6071"
 
   url "https://github.com/Robertg761/HA-Desktop-Widget/releases/download/v#{version}/HA-Desktop-Widget-#{version}-universal.dmg"
   name "HA Desktop Widget"
