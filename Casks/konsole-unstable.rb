@@ -22,10 +22,10 @@ cask "konsole-unstable" do
 
   app "konsole.app", target: "Konsole.app"
 
-  postflight do
-    system_command "xattr",
-                   args:         ["-r", "-d", "com.apple.quarantine", "#{appdir}/Konsole.app"],
-                   must_succeed: false
+  postflight_steps do
+    run "xattr",
+        args:         ["-r", "-d", "com.apple.quarantine", "{{appdir}}/Konsole.app"],
+        must_succeed: false
   end
 
   zap trash: [
