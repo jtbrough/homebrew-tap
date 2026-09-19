@@ -50,8 +50,17 @@ cask "konsole-unstable" do
     # rejects it, which is why quarantine is stripped above), so ad-hoc
     # re-signing loses nothing Gatekeeper was honoring. It's required, though:
     # Apple Silicon refuses to launch an app with an invalid signature.
+    #
+    # Must be --deep: re-signing only the outer bundle leaves nested
+    # frameworks (e.g. libkonsoleapp.dylib) signed with KDE's real Team ID
+    # while the main executable becomes ad-hoc (no Team ID). --options
+    # runtime re-enables the hardened runtime's Library Validation, which
+    # then refuses to load those mismatched-Team-ID frameworks and the app
+    # fails to launch ("Konsole cannot be opened..."). Dropping --options
+    # runtime avoids that check entirely; --deep keeps every nested binary's
+    # signature consistently ad-hoc so nothing mismatches.
     run "/usr/bin/codesign",
-        args:         ["--force", "--options", "runtime", "--sign", "-", "{{appdir}}/Konsole.app"],
+        args:         ["--force", "--deep", "--sign", "-", "{{appdir}}/Konsole.app"],
         must_succeed: false
   end
 
