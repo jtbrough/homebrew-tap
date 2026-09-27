@@ -21,6 +21,7 @@ class Welcome < Formula
     system "cmake", "--build", "build"
     bin.install "build/welcome"
     (share/"welcome").install "items.json"
+    (share/"welcome").install "jordan.png"
   end
 
   def caveats
@@ -38,6 +39,7 @@ class Welcome < Formula
   test do
     assert_path_exists bin/"welcome"
     assert_path_exists share/"welcome/items.json"
+    assert_path_exists share/"welcome/jordan.png"
     system bin/"welcome", "--setup-autostart"
     assert_path_exists testpath/".config/autostart/welcome.desktop"
     assert_path_exists testpath/".local/share/applications/welcome.desktop"
