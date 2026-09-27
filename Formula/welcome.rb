@@ -1,8 +1,8 @@
 class Welcome < Formula
   desc "Declarative first-run/on-demand workstation setup menu"
   homepage "https://git.home.brough.org/jordan/welcome"
-  url "https://git.home.brough.org/jordan/welcome/releases/download/v0.1.1/welcome-v0.1.1-src.tar.gz"
-  sha256 "83ed8874bbf20c93fe653f1c8db63d3e6a9a670c488e5dcf81f5aaa2d097bc1a"
+  url "https://git.home.brough.org/jordan/welcome/releases/download/v0.1.2/welcome-v0.1.2-src.tar.gz"
+  sha256 "e69bb6b9021e6fcc2d191e29f80032d4cbc39474ade438b509e635bd05fc786d"
   license "Apache-2.0"
 
   depends_on "cmake" => :build
