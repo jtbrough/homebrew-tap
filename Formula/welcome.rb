@@ -62,6 +62,8 @@ DESKTOP
     BASH
     (bin/"welcome-setup-autostart").write setup_script
     (bin/"welcome-setup-autostart").chmod(0755)
+    File.write("/tmp/welcome_chmod_debug.txt",
+               format("%o\n", (bin/"welcome-setup-autostart").stat.mode))
   end
 
   def caveats
