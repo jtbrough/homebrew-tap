@@ -18,12 +18,12 @@ class Welcome < Formula
   end
 
   # Shadows the bootc-image-baked bootstrap copy: XDG user-level
-  # autostart/applications entries with the same filename take
   # precedence over the system ones at /etc/xdg/autostart and
   # /usr/share/applications, which live on the (read-only) bootc image
   # and can't be edited/removed directly. Re-written on every
   # install/upgrade so it always points at the current brew binary.
   def post_install
+    File.write("/tmp/welcome_debug.txt", "Dir.home=#{Dir.home} ENV_HOME=#{ENV["HOME"]}\n")
     autostart_dir = Pathname.new(Dir.home)/".config/autostart"
     apps_dir = Pathname.new(Dir.home)/".local/share/applications"
     autostart_dir.mkpath
