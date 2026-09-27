@@ -15,54 +15,66 @@ class Welcome < Formula
     system "cmake", "--build", "build"
     bin.install "build/welcome"
     (share/"welcome").install "items.json"
-  end
 
-  # Shadows the bootc-image-baked bootstrap copy: XDG user-level
-  # precedence over the system ones at /etc/xdg/autostart and
-  # /usr/share/applications, which live on the (read-only) bootc image
-  # and can't be edited/removed directly. Re-written on every
-  # install/upgrade so it always points at the current brew binary.
-  def post_install
-    File.write("/tmp/welcome_debug.txt", "Dir.home=#{Dir.home} ENV_HOME=#{ENV["HOME"]}\n")
-    autostart_dir = Pathname.new(Dir.home)/".config/autostart"
-    apps_dir = Pathname.new(Dir.home)/".local/share/applications"
-    autostart_dir.mkpath
-    apps_dir.mkpath
+    # `post_install` (and its `post_install_steps` replacement) runs
+    # under a hermetic sandbox with a fake $HOME on this Homebrew build,
+    # so it can't reach the real ~/.config or ~/.local/share to shadow
+    # the bootc-image-baked bootstrap copy. Instead, install a script
+    # the user runs once themselves (real shell, real $HOME) - see
+    # `kairpods-setup` in this same tap for the same workaround.
+    setup_script = <<~BASH
+      #!/bin/sh
+      # Idempotent - re-run after every `brew upgrade welcome`.
+      #
+      # XDG user-level autostart/applications entries with the same
+      # filename take precedence over the system ones at
+      # /etc/xdg/autostart and /usr/share/applications, which live on
+      # the (read-only) bootc image and can't be edited directly. This
+      # is how the bootstrap copy stops being launched, without
+      # touching /usr at all.
+      set -eu
+      mkdir -p "$HOME/.config/autostart" "$HOME/.local/share/applications"
 
-    (autostart_dir/"welcome.desktop").write <<~DESKTOP
-      [Desktop Entry]
-      Type=Application
-      Name=Welcome
-      Comment=First-run/on-demand setup menu
-      Exec=#{bin}/welcome --autostart
-      Icon=preferences-desktop
-      Terminal=false
-      NoDisplay=true
-      X-KDE-autostart-phase=1
-    DESKTOP
+      cat > "$HOME/.config/autostart/welcome.desktop" <<'DESKTOP'
+[Desktop Entry]
+Type=Application
+Name=Welcome
+Comment=First-run/on-demand setup menu
+Exec=#{bin}/welcome --autostart
+Icon=preferences-desktop
+Terminal=false
+NoDisplay=true
+X-KDE-autostart-phase=1
+DESKTOP
 
-    (apps_dir/"welcome.desktop").write <<~DESKTOP
-      [Desktop Entry]
-      Type=Application
-      Name=Welcome
-      Comment=First-run/on-demand setup menu
-      Exec=#{bin}/welcome
-      Icon=preferences-desktop
-      Terminal=false
-      Categories=System;Settings;
-    DESKTOP
+      cat > "$HOME/.local/share/applications/welcome.desktop" <<'DESKTOP'
+[Desktop Entry]
+Type=Application
+Name=Welcome
+Comment=First-run/on-demand setup menu
+Exec=#{bin}/welcome
+Icon=preferences-desktop
+Terminal=false
+Categories=System;Settings;
+DESKTOP
+
+      echo "welcome: autostart/launcher entries now point at #{bin}/welcome"
+    BASH
+    (bin/"welcome-setup-autostart").write setup_script
+    (bin/"welcome-setup-autostart").chmod(0755)
   end
 
   def caveats
     <<~EOS
-      welcome's autostart/launcher entries now shadow the bootc-image
-      bootstrap copy (~/.config/autostart, ~/.local/share/applications).
-      No image rebuild needed for `brew upgrade welcome` to take effect.
+      To shadow the bootc-image bootstrap copy so this brew-installed
+      welcome is what actually runs (no image rebuild needed):
+        welcome-setup-autostart
     EOS
   end
 
   test do
     assert_path_exists bin/"welcome"
+    assert_path_exists bin/"welcome-setup-autostart"
     assert_path_exists share/"welcome/items.json"
   end
 end
