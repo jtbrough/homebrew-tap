@@ -1,0 +1,58 @@
+name: Update Welcome
+
+on:
+  schedule:
+    - cron: "15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-welcome
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Require Forgejo tap write token
+        env:
+          FORGEJO_TAP_TOKEN: ${{ secrets.FORGEJO_TAP_TOKEN }}
+        run: |
+          if [ -z "$FORGEJO_TAP_TOKEN" ]; then
+            echo 'Set FORGEJO_TAP_TOKEN with write access to jordan/homebrew-tap before running this workflow.' >&2
+            exit 1
+          fi
+
+      - name: Merge tap changes from Forgejo
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git remote add forgejo https://git.home.brough.org/jordan/homebrew-tap.git
+          git fetch forgejo main
+          git merge --no-edit forgejo/main
+
+      - name: Update formula from published welcome release
+        run: |
+          python3 scripts/update-welcome-formula.py Formula/welcome.rb
+          if ! git diff --quiet -- Formula/welcome.rb; then
+            git add Formula/welcome.rb
+            git commit -m "chore: bump welcome to $(sed -n 's@.*releases/download/v\([0-9][^/]*\)/.*@\1@p' Formula/welcome.rb)"
+          fi
+
+      - name: Push to both taps
+        env:
+          FORGEJO_TAP_TOKEN: ${{ secrets.FORGEJO_TAP_TOKEN }}
+          GIT_TERMINAL_PROMPT: "0"
+        run: |
+          # Token expands when Git calls the credential helper, not here.
+          # shellcheck disable=SC2016
+          git -c credential.helper='!f() { printf "username=jordan\npassword=%s\n" "$FORGEJO_TAP_TOKEN"; }; f' \
+            push forgejo HEAD:main
+          git push origin HEAD:main
