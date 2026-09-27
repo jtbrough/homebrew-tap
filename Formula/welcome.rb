@@ -8,6 +8,12 @@ class Welcome < Formula
   depends_on "cmake" => :build
   depends_on :linux
   depends_on "qtbase"
+  # Breeze (and most other icon themes) ship SVG icons; qtbase alone
+  # has no SVG icon-engine plugin, so QIcon::fromTheme resolves the
+  # file but silently renders a null icon without this (confirmed
+  # empirically: isNull() flipped from true to false installing only
+  # this one extra formula, no code change).
+  depends_on "qtsvg"
 
   def install
     system "cmake", "-S", ".", "-B", "build", "-DWELCOME_SHARE_DIR=#{share}/welcome",
