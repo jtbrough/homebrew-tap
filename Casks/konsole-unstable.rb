@@ -1,5 +1,5 @@
 cask "konsole-unstable" do
-  version "5348"
+  version "5400"
   sha256 :no_check
 
   on_arm do
