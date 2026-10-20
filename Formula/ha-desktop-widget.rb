@@ -3,8 +3,8 @@ class HaDesktopWidget < Formula
   homepage "https://github.com/Robertg761/HA-Desktop-Widget"
   url "https://github.com/Robertg761/HA-Desktop-Widget/releases/download/v#{version}/HA-Desktop-Widget-#{version}-linux-x86_64.AppImage",
       verified: "github.com/Robertg761/HA-Desktop-Widget/"
-  version "3.11.0"
-  sha256 "dc8991c58f2cb76b04d7d9ee7918f4aff2c1ad2a323679fdfd5214d077ce5ba1"
+  version "4.0.0"
+  sha256 "aa673c5376c9d73cab574a24e29a45d05a1b75ceb9f4193498d5a5d699cd391a"
 
   livecheck do
     url :homepage
